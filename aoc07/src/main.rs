@@ -58,11 +58,11 @@ fn parse_line(line: &str, wd: &mut Vec<String>, current_contents: &mut Vec<Fs>) 
 fn parse_fs(input: String) -> Fs {
     let mut fs = Fs::Dir("/".to_owned(), vec![]);
     let mut wd = vec![];
-    for line in input.lines().enumerate().skip(1) {
+    for line in input.lines().skip(1) {
         let Fs::Dir(_, current_contents) = fs.get(&wd) else {
             panic!("not a folder")
         };
-        parse_line(line.1, &mut wd, current_contents);
+        parse_line(line, &mut wd, current_contents);
     }
     fs
 }
