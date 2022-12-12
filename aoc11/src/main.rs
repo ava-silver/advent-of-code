@@ -4,7 +4,6 @@ struct Monkey {
     items: Vec<usize>,
     operation: Box<dyn Fn(usize) -> usize>,
     test: Box<dyn Fn(usize) -> usize>,
-    skipped: bool,
     items_inspected: usize,
 }
 
@@ -20,8 +19,10 @@ fn get_num(lines: &mut Skip<Lines>, split: &str) -> usize {
         .unwrap()
 }
 
-fn parse_monkeys(input: String) -> Vec<Monkey> {
-    input
+// also produces the product of all the divisors, for use later
+fn parse_monkeys(input: String) -> (Vec<Monkey>, usize) {
+    let mut product = 1;
+    (input
         .split("\n\n")
         .map(|monkey_text| {
             let mut lines = monkey_text.lines().skip(1);
@@ -53,6 +54,7 @@ fn parse_monkeys(input: String) -> Vec<Monkey> {
             let v1 = op_tokens[1].parse().ok();
 
             let modulus = get_num(&mut lines, "divisible by ");
+            product *= modulus;
             let true_v = get_num(&mut lines, "to monkey ");
             let false_v = get_num(&mut lines, "to monkey ");
 
@@ -60,24 +62,16 @@ fn parse_monkeys(input: String) -> Vec<Monkey> {
                 items,
                 operation: Box::new(move |old| op(v0.unwrap_or(old), v1.unwrap_or(old))),
                 test: Box::new(move |old| if old % modulus == 0 { true_v } else { false_v }),
-                skipped: false,
                 items_inspected: 0,
             }
         })
-        .collect()
+        .collect(), product)
 }
 
 fn part_1(monkeys: &mut Vec<Monkey>) -> usize {
     for _ in 0..20 {
-        // set skipped flag
-        for monkey in monkeys.iter_mut() {
-            monkey.skipped = monkey.items.is_empty();
-        }
         // do round
         for i in 0..monkeys.len() {
-            if monkeys[i].skipped {
-                continue;
-            }
             monkeys[i].items.reverse();
             while let Some(item) = monkeys[i].items.pop() {
                 let worry = (monkeys[i].operation)(item) / 3;
@@ -91,8 +85,27 @@ fn part_1(monkeys: &mut Vec<Monkey>) -> usize {
     monkeys.pop().unwrap().items_inspected * monkeys.pop().unwrap().items_inspected
 }
 
+fn part_2(monkeys: &mut Vec<Monkey>, product: usize) -> usize {
+    for _ in 1..=10000 {
+        // do round
+        for i in 0..monkeys.len() {
+            monkeys[i].items.reverse();
+            while let Some(item) = monkeys[i].items.pop() {
+                let worry = (monkeys[i].operation)(item);
+                let next_monkey = (monkeys[i].test)(worry);
+                monkeys[i].items_inspected += 1;
+                monkeys[next_monkey].items.push(worry % product);
+            }
+        }
+    }
+    monkeys.sort_by_key(|m| m.items_inspected);
+    monkeys.pop().unwrap().items_inspected * monkeys.pop().unwrap().items_inspected
+}
+
 fn main() {
-    let input = read_to_string("example.txt").unwrap();
-    let mut monkeys = parse_monkeys(input.clone());
+    let input = read_to_string("input.txt").unwrap();
+    let (mut monkeys, _) = parse_monkeys(input.clone());
     println!("Part 1: {}", part_1(&mut monkeys));
+    let (mut monkeys, product) = parse_monkeys(input.clone());
+    println!("Part 2: {}", part_2(&mut monkeys, product));
 }
