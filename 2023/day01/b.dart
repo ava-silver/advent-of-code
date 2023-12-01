@@ -1,7 +1,5 @@
 import 'dart:io';
 
-var regex = RegExp(r'(\d|one|two|three|four|five|six|seven|eight|nine)');
-
 var english_digits = {
   "one": 1,
   "two": 2,
@@ -19,6 +17,8 @@ int parseDigit(String group) {
 }
 
 void main() {
+  var digits = english_digits.keys.map((e) => "($e)").join("|");
+  var regex = RegExp('(\\d)|$digits');
   var lines = File("input.txt").readAsLinesSync();
   var sum = lines.map((line) {
     var matches = regex.allMatches(line);
