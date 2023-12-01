@@ -17,13 +17,12 @@ int parseDigit(String group) {
 }
 
 void main() {
-  var digits = english_digits.keys.map((e) => "($e)").join("|");
-  var regex = RegExp('(\\d)|$digits');
+  var digits = english_digits.keys.join("|");
+  var regex = RegExp('(?=(\\d|$digits))');
   var lines = File("input.txt").readAsLinesSync();
   var sum = lines.map((line) {
     var matches = regex.allMatches(line);
-    return parseDigit(matches.first.group(0)!) * 10 +
-        parseDigit(matches.last.group(0)!);
+    return parseDigit(matches.first[1]!) * 10 + parseDigit(matches.last[1]!);
   }).fold(0, (sum, e) => e + sum);
   print(sum);
 }
