@@ -1,3 +1,3 @@
-# Advent of Code 2022
+# Advent of Code
 
-My repo for [Advent of Code](https://adventofcode.com/) of 2022, done in rust.
+My repo for [Advent of Code](https://adventofcode.com/)
