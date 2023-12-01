@@ -1,0 +1,29 @@
+import 'dart:io';
+
+var regex = RegExp(r'(\d|one|two|three|four|five|six|seven|eight|nine)');
+
+var english_digits = {
+  "one": 1,
+  "two": 2,
+  "three": 3,
+  "four": 4,
+  "five": 5,
+  "six": 6,
+  "seven": 7,
+  "eight": 8,
+  "nine": 9,
+};
+
+int parseDigit(String group) {
+  return english_digits[group] ?? int.parse(group);
+}
+
+void main() {
+  var lines = File("input.txt").readAsLinesSync();
+  var sum = lines.map((line) {
+    var matches = regex.allMatches(line);
+    return parseDigit(matches.first.group(0)!) * 10 +
+        parseDigit(matches.last.group(0)!);
+  }).fold(0, (sum, e) => e + sum);
+  print(sum);
+}
