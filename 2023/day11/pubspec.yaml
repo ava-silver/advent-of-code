@@ -1,5 +1,5 @@
-name: day05
+name: day11
 environment:
   sdk: '^3.2.0'
 dependencies:
-  quiver: ^3.2.1
+  darq: ^2.0.0

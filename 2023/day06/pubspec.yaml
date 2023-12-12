@@ -1,4 +1,4 @@
-name: day05
+name: day06
 environment:
   sdk: '^3.2.0'
 dependencies:
