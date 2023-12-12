@@ -2,4 +2,4 @@ name: day11
 environment:
   sdk: '^3.2.0'
 dependencies:
-  darq: ^2.0.0
+  trotter: ^2.2.0
