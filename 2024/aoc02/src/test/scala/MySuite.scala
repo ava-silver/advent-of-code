@@ -9,4 +9,7 @@ class MySuite extends munit.FunSuite {
   test("part 1") {
     assertEquals(part1(input), 2)
   }
+  test("part 2") {
+    assertEquals(part2(input), 4)
+  }
 }
