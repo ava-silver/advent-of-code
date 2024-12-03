@@ -21,7 +21,7 @@ def part1(input: String): Int =
 def part2(input: String): Int =
   parse(input)
     .filter(report =>
-      (0 to report.length)
+      (0 until report.length)
         .exists(i => valid(report.take(i) ++ report.drop(i + 1)))
     )
     .length
