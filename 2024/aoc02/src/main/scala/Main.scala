@@ -1,8 +1,5 @@
 package aoc02
 import scala.io.Source.fromResource
-import scala.util.boundary
-import scala.collection.View
-import java.util.Collection
 
 def parse(input: String): Array[Array[Int]] =
   input.split("\n").map(_.split(" ").map(_.toInt))
