@@ -25,9 +25,7 @@ def part2(input: String): Int =
   parse(input)
     .filter(report =>
       (0 to report.length)
-        .exists(i =>
-          valid((report.view.take(i) ++ report.view.drop(i + 1)).toArray)
-        )
+        .exists(i => valid(report.take(i) ++ report.drop(i + 1)))
     )
     .length
 
