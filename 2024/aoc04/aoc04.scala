@@ -13,14 +13,14 @@ val directions = (-1 to 1)
 val xmas = "XMAS".toCharArray
 
 def countXmas(chars: Array[Array[Char]], row: Int, col: Int): Int =
-  directions.filter { case (dx, dy) =>
+  directions.count { case (dx, dy) =>
     xmas.zipWithIndex.forall { case (char, idx) =>
       val r = row + (idx * dy)
       val c = col + (idx * dx)
       r >= 0 && r < chars.length && c >= 0 && c < chars(0).length &&
       chars(r)(c) == char
     }
-  }.length
+  }
 
 def part1(input: String): Int =
   val chars = input.linesIterator.map(_.toCharArray).toArray
