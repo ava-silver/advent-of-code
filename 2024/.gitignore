@@ -18,9 +18,6 @@ local.sbt
 # Bloop
 .bsp
 
-# VS Code
-.vscode/
-
 # Metals
 .bloop/
 .metals/
@@ -30,3 +27,6 @@ metals.sbt
 .idea
 .idea_modules
 /.worksheet/
+
+# scala-cli
+.scala-build
