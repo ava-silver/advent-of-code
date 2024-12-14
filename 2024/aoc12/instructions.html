@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8"/>
+<title>Day 12 - Advent of Code 2024</title>
+<link rel="stylesheet" type="text/css" href="style.css?31"/>
+<link rel="stylesheet alternate" type="text/css" href="/static/highcontrast.css?1" title="High Contrast"/>
+<link rel="shortcut icon" href="/favicon.png"/>
+<script>window.addEventListener('click', function(e,s,r){if(e.target.nodeName==='CODE'&&e.detail===3){s=window.getSelection();s.removeAllRanges();r=document.createRange();r.selectNodeContents(e.target);s.addRange(r);}});</script>
+</head><!--
+
+
+
+
+Oh, hello!  Funny seeing you here.
+
+I appreciate your enthusiasm, but you aren't going to find much down here.
+There certainly aren't clues to any of the puzzles.  The best surprises don't
+even appear in the source until you unlock them for real.
+
+Please be careful with automated requests; I'm not a massive company, and I can
+only take so much traffic.  Please be considerate so that everyone gets to play.
+
+If you're curious about how Advent of Code works, it's running on some custom
+Perl code. Other than a few integrations (auth, analytics, social media), I
+built the whole thing myself, including the design, animations, prose, and all
+of the puzzles.
+
+The puzzles are most of the work; preparing a new calendar and a new set of
+puzzles each year takes all of my free time for 4-5 months. A lot of effort
+went into building this thing - I hope you're enjoying playing it as much as I
+enjoyed making it for you!
+
+If you'd like to hang out, I'm @was.tl on Bluesky, @ericwastl@hachyderm.io on
+Mastodon, and @ericwastl on Twitter.
+
+- Eric Wastl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->
+<body>
+<header><div><h1 class="title-global"><a href="/">Advent of Code</a></h1><nav><ul><li><a href="/2024/about">[About]</a></li><li><a href="/2024/events">[Events]</a></li><li><a href="https://cottonbureau.com/people/advent-of-code" target="_blank">[Shop]</a></li><li><a href="/2024/auth/login">[Log In]</a></li></ul></nav></div><div><h1 class="title-event">&nbsp;<span class="title-event-wrap">{&apos;year&apos;:</span><a href="/2024">2024</a><span class="title-event-wrap">}</span></h1><nav><ul><li><a href="/2024">[Calendar]</a></li><li><a href="/2024/support">[AoC++]</a></li><li><a href="/2024/sponsors">[Sponsors]</a></li><li><a href="/2024/leaderboard">[Leaderboard]</a></li><li><a href="/2024/stats">[Stats]</a></li></ul></nav></div></header>
+
+<div id="sidebar">
+<div id="sponsor"><div class="quiet">Our <a href="/2024/sponsors">sponsors</a> help make Advent of Code possible:</div><div class="sponsor"><a href="/2024/sponsors/redirect?url=https%3A%2F%2Fwww%2Esourceallies%2Ecom%2F" target="_blank" onclick="if(ga)ga('send','event','sponsor','sidebar',this.href);" rel="noopener">Source Allies</a> - Enjoy the gift of good code! Join experts who solve problems with an ownership mindset. Make a difference on day one, not one day!</div></div>
+</div><!--/sidebar-->
+
+<main>
+<article class="day-desc"><h2>--- Day 12: Garden Groups ---</h2><p>Why not search for the Chief Historian near the <a href="/2023/day/5">gardener</a> and his <a href="/2023/day/21">massive farm</a>? There's plenty of food, so The Historians grab something to eat while they search.</p>
+<p>You're about to settle near a complex arrangement of garden plots when some Elves ask if you can lend a hand. They'd like to set up <span title="I originally wanted to title this puzzle &quot;Fencepost Problem&quot;, but I was afraid someone would then try to count fenceposts by mistake and experience a fencepost problem.">fences</span> around each region of garden plots, but they can't figure out how much fence they need to order or how much it will cost. They hand you a map (your puzzle input) of the garden plots.</p>
+<p>Each garden plot grows only a single type of plant and is indicated by a single letter on your map. When multiple garden plots are growing the same type of plant and are touching (horizontally or vertically), they form a <em>region</em>. For example:</p>
+<pre><code>AAAA
+BBCD
+BBCC
+EEEC
+</code></pre>
+<p>This 4x4 arrangement includes garden plots growing five different types of plants (labeled <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, and <code>E</code>), each grouped into their own region.</p>
+<p>In order to accurately calculate the cost of the fence around a single region, you need to know that region's <em>area</em> and <em>perimeter</em>.</p>
+<p>The <em>area</em> of a region is simply the number of garden plots the region contains. The above map's type <code>A</code>, <code>B</code>, and <code>C</code> plants are each in a region of area <code>4</code>. The type <code>E</code> plants are in a region of area <code>3</code>; the type <code>D</code> plants are in a region of area <code>1</code>.</p>
+<p>Each garden plot is a square and so has <em>four sides</em>. The <em>perimeter</em> of a region is the number of sides of garden plots in the region that do not touch another garden plot in the same region. The type <code>A</code> and <code>C</code> plants are each in a region with perimeter <code>10</code>. The type <code>B</code> and <code>E</code> plants are each in a region with perimeter <code>8</code>. The lone <code>D</code> plot forms its own region with perimeter <code>4</code>.</p>
+<p>Visually indicating the sides of plots in each region that contribute to the perimeter using <code>-</code> and <code>|</code>, the above map's regions' perimeters are measured as follows:</p>
+<pre><code>+-+-+-+-+
+|A A A A|
++-+-+-+-+     +-+
+              |D|
++-+-+   +-+   +-+
+|B B|   |C|
++   +   + +-+
+|B B|   |C C|
++-+-+   +-+ +
+          |C|
++-+-+-+   +-+
+|E E E|
++-+-+-+
+</code></pre>
+<p>Plants of the same type can appear in multiple separate regions, and regions can even appear within other regions. For example:</p>
+<pre><code>OOOOO
+OXOXO
+OOOOO
+OXOXO
+OOOOO
+</code></pre>
+<p>The above map contains <em>five</em> regions, one containing all of the <code>O</code> garden plots, and the other four each containing a single <code>X</code> plot.</p>
+<p>The four <code>X</code> regions each have area <code>1</code> and perimeter <code>4</code>. The region containing <code>21</code> type <code>O</code> plants is more complicated; in addition to its outer edge contributing a perimeter of <code>20</code>, its boundary with each <code>X</code> region contributes an additional <code>4</code> to its perimeter, for a total perimeter of <code>36</code>.</p>
+<p>Due to "modern" business practices, the <em>price</em> of fence required for a region is found by <em>multiplying</em> that region's area by its perimeter. The <em>total price</em> of fencing all regions on a map is found by adding together the price of fence for every region on the map.</p>
+<p>In the first example, region <code>A</code> has price <code>4 * 10 = 40</code>, region <code>B</code> has price <code>4 * 8 = 32</code>, region <code>C</code> has price <code>4 * 10 = 40</code>, region <code>D</code> has price <code>1 * 4 = 4</code>, and region <code>E</code> has price <code>3 * 8 = 24</code>. So, the total price for the first example is <code><em>140</em></code>.</p>
+<p>In the second example, the region with all of the <code>O</code> plants has price <code>21 * 36 = 756</code>, and each of the four smaller <code>X</code> regions has price <code>1 * 4 = 4</code>, for a total price of <code><em>772</em></code> (<code>756 + 4 + 4 + 4 + 4</code>).</p>
+<p>Here's a larger example:</p>
+<pre><code>RRRRIICCFF
+RRRRIICCCF
+VVRRRCCFFF
+VVRCCCJFFF
+VVVVCJJCFE
+VVIVCCJJEE
+VVIIICJJEE
+MIIIIIJJEE
+MIIISIJEEE
+MMMISSJEEE
+</code></pre>
+<p>It contains:</p>
+<ul>
+<li>A region of <code>R</code> plants with price <code>12 * 18 = 216</code>.</li>
+<li>A region of <code>I</code> plants with price <code>4 * 8 = 32</code>.</li>
+<li>A region of <code>C</code> plants with price <code>14 * 28 = 392</code>.</li>
+<li>A region of <code>F</code> plants with price <code>10 * 18 = 180</code>.</li>
+<li>A region of <code>V</code> plants with price <code>13 * 20 = 260</code>.</li>
+<li>A region of <code>J</code> plants with price <code>11 * 20 = 220</code>.</li>
+<li>A region of <code>C</code> plants with price <code>1 * 4 = 4</code>.</li>
+<li>A region of <code>E</code> plants with price <code>13 * 18 = 234</code>.</li>
+<li>A region of <code>I</code> plants with price <code>14 * 22 = 308</code>.</li>
+<li>A region of <code>M</code> plants with price <code>5 * 12 = 60</code>.</li>
+<li>A region of <code>S</code> plants with price <code>3 * 8 = 24</code>.</li>
+</ul>
+<p>So, it has a total price of <code><em>1930</em></code>.</p>
+<p><em>What is the total price of fencing all regions on your map?</em></p>
+</article>
+<p>To play, please identify yourself via one of these services:</p>
+<p><a href="/auth/github">[GitHub]</a> <a href="/auth/google">[Google]</a> <a href="/auth/twitter">[Twitter]</a> <a href="/auth/reddit">[Reddit]</a> <span class="quiet">- <a href="/about#faq_auth">[How Does Auth Work?]</a></span></p>
+</main>
+
+<!-- ga -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-69522494-1', 'auto');
+ga('set', 'anonymizeIp', true);
+ga('send', 'pageview');
+</script>
+<!-- /ga -->
+</body>
+</html>

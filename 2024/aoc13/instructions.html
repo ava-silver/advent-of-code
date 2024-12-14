@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8"/>
+<title>Day 13 - Advent of Code 2024</title>
+<link rel="stylesheet" type="text/css" href="style.css?31"/>
+<link rel="stylesheet alternate" type="text/css" href="/static/highcontrast.css?1" title="High Contrast"/>
+<link rel="shortcut icon" href="/favicon.png"/>
+<script>window.addEventListener('click', function(e,s,r){if(e.target.nodeName==='CODE'&&e.detail===3){s=window.getSelection();s.removeAllRanges();r=document.createRange();r.selectNodeContents(e.target);s.addRange(r);}});</script>
+</head><!--
+
+
+
+
+Oh, hello!  Funny seeing you here.
+
+I appreciate your enthusiasm, but you aren't going to find much down here.
+There certainly aren't clues to any of the puzzles.  The best surprises don't
+even appear in the source until you unlock them for real.
+
+Please be careful with automated requests; I'm not a massive company, and I can
+only take so much traffic.  Please be considerate so that everyone gets to play.
+
+If you're curious about how Advent of Code works, it's running on some custom
+Perl code. Other than a few integrations (auth, analytics, social media), I
+built the whole thing myself, including the design, animations, prose, and all
+of the puzzles.
+
+The puzzles are most of the work; preparing a new calendar and a new set of
+puzzles each year takes all of my free time for 4-5 months. A lot of effort
+went into building this thing - I hope you're enjoying playing it as much as I
+enjoyed making it for you!
+
+If you'd like to hang out, I'm @was.tl on Bluesky, @ericwastl@hachyderm.io on
+Mastodon, and @ericwastl on Twitter.
+
+- Eric Wastl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->
+<body>
+<header><div><h1 class="title-global"><a href="/">Advent of Code</a></h1><nav><ul><li><a href="/2024/about">[About]</a></li><li><a href="/2024/events">[Events]</a></li><li><a href="https://cottonbureau.com/people/advent-of-code" target="_blank">[Shop]</a></li><li><a href="/2024/auth/login">[Log In]</a></li></ul></nav></div><div><h1 class="title-event">&nbsp;&nbsp;&nbsp;<span class="title-event-wrap">0x0000|</span><a href="/2024">2024</a><span class="title-event-wrap"></span></h1><nav><ul><li><a href="/2024">[Calendar]</a></li><li><a href="/2024/support">[AoC++]</a></li><li><a href="/2024/sponsors">[Sponsors]</a></li><li><a href="/2024/leaderboard">[Leaderboard]</a></li><li><a href="/2024/stats">[Stats]</a></li></ul></nav></div></header>
+
+<div id="sidebar">
+<div id="sponsor"><div class="quiet">Our <a href="/2024/sponsors">sponsors</a> help make Advent of Code possible:</div><div class="sponsor"><a href="/2024/sponsors/redirect?url=https%3A%2F%2Fwww%2Ejumptrading%2Ecom%2Fcareers%2F" target="_blank" onclick="if(ga)ga('send','event','sponsor','sidebar',this.href);" rel="noopener">Jump Trading</a> - Tech. Research. Trading. Come build trading algos, write high performance software, and train sophisticated ML models to beat the market.</div></div>
+</div><!--/sidebar-->
+
+<main>
+<article class="day-desc"><h2>--- Day 13: Claw Contraption ---</h2><p>Next up: the <a href="/2020/day/24">lobby</a> of a resort on a tropical island. The Historians take a moment to admire the hexagonal floor tiles before spreading out.</p>
+<p>Fortunately, it looks like the resort has a new <a href="https://en.wikipedia.org/wiki/Amusement_arcade">arcade</a>! Maybe you can win some prizes from the <a href="https://en.wikipedia.org/wiki/Claw_machine" target="_blank">claw machines</a>?</p>
+<p>The claw machines here are a little unusual. Instead of a joystick or directional buttons to control the claw, these machines have two buttons labeled <code>A</code> and <code>B</code>. Worse, you can't just put in a token and play; it costs <em>3 tokens</em> to push the <code>A</code> button and <em>1 token</em> to push the <code>B</code> button.</p>
+<p>With a little experimentation, you figure out that each machine's buttons are configured to move the claw a specific amount to the <em>right</em> (along the <code>X</code> axis) and a specific amount <em>forward</em> (along the <code>Y</code> axis) each time that button is pressed.</p>
+<p>Each machine contains one <em>prize</em>; to win the prize, the claw must be positioned <em>exactly</em> above the prize on both the <code>X</code> and <code>Y</code> axes.</p>
+<p>You wonder: what is the smallest number of tokens you would have to spend to win as many prizes as possible? You assemble a list of every machine's button behavior and prize location (your puzzle input). For example:</p>
+<pre><code>Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=8400, Y=5400
+
+Button A: X+26, Y+66
+Button B: X+67, Y+21
+Prize: X=12748, Y=12176
+
+Button A: X+17, Y+86
+Button B: X+84, Y+37
+Prize: X=7870, Y=6450
+
+Button A: X+69, Y+23
+Button B: X+27, Y+71
+Prize: X=18641, Y=10279
+</code></pre>
+<p>This list describes the button configuration and prize location of four different claw machines.</p>
+<p>For now, consider just the first claw machine in the list:</p>
+<ul>
+<li>Pushing the machine's <code>A</code> button would move the claw <code>94</code> units along the <code>X</code> axis and <code>34</code> units along the <code>Y</code> axis.</li>
+<li>Pushing the <code>B</code> button would move the claw <code>22</code> units along the <code>X</code> axis and <code>67</code> units along the <code>Y</code> axis.</li>
+<li>The prize is located at <code>X=8400</code>, <code>Y=5400</code>; this means that from the claw's initial position, it would need to move exactly <code>8400</code> units along the <code>X</code> axis and exactly <code>5400</code> units along the <code>Y</code> axis to be perfectly aligned with the prize in this machine.</li>
+</ul>
+<p>The cheapest way to win the prize is by pushing the <code>A</code> button <code>80</code> times and the <code>B</code> button <code>40</code> times. This would line up the claw along the <code>X</code> axis (because <code>80*94 + 40*22 = 8400</code>) and along the <code>Y</code> axis (because <code>80*34 + 40*67 = 5400</code>). Doing this would cost <code>80*3</code> tokens for the <span title="Half A presses are not allowed."><code>A</code> presses</span> and <code>40*1</code> for the <code>B</code> presses, a total of <code><em>280</em></code> tokens.</p>
+<p>For the second and fourth claw machines, there is no combination of A and B presses that will ever win a prize.</p>
+<p>For the third claw machine, the cheapest way to win the prize is by pushing the <code>A</code> button <code>38</code> times and the <code>B</code> button <code>86</code> times. Doing this would cost a total of <code><em>200</em></code> tokens.</p>
+<p>So, the most prizes you could possibly win is two; the minimum tokens you would have to spend to win all (two) prizes is <code><em>480</em></code>.</p>
+<p>You estimate that each button would need to be pressed <em>no more than <code>100</code> times</em> to win a prize. How else would someone be expected to play?</p>
+<p>Figure out how to win as many prizes as possible. <em>What is the fewest tokens you would have to spend to win all possible prizes?</em></p>
+</article>
+<p>To play, please identify yourself via one of these services:</p>
+<p><a href="/auth/github">[GitHub]</a> <a href="/auth/google">[Google]</a> <a href="/auth/twitter">[Twitter]</a> <a href="/auth/reddit">[Reddit]</a> <span class="quiet">- <a href="/about#faq_auth">[How Does Auth Work?]</a></span></p>
+</main>
+
+<!-- ga -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-69522494-1', 'auto');
+ga('set', 'anonymizeIp', true);
+ga('send', 'pageview');
+</script>
+<!-- /ga -->
+</body>
+</html>
