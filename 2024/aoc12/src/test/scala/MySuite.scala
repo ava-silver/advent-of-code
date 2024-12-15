@@ -23,6 +23,7 @@ class MySuite extends munit.FunSuite {
     assertEquals(part1(input2), 1930)
   }
   test("part2") {
-    assertEquals(part2(input2), 0)
+    assertEquals(part2(input1), 80)
+    assertEquals(part2(input2), 1206)
   }
 }

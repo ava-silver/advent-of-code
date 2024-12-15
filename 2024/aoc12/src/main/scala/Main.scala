@@ -74,12 +74,28 @@ def part1(input: String): Int =
     .map(r => perimiter(map, r) * r.length)
     .sum
 
-def dot(p1: Point, p2: Point): Int =
-  (p1._1 * p2._1) + (p1._2 * p2._2)
+val corners = Array(
+  (1, 0) -> (0, 1),
+  (1, 0) -> (0, -1),
+  (-1, 0) -> (0, -1),
+  (-1, 0) -> (0, 1)
+)
 
+// sides == number of corners
 def sides(region: Array[Point]): Int =
-  // todo
-  0
+  val (xs, ys) = region.unzip
+  val inRegion = region.toSet.contains
+  (xs.min to xs.max).map { x =>
+    (ys.min to ys.max).map { y =>
+      val curCharInRegion = inRegion((x, y))
+      corners.count { case (d1, d2) =>
+        val corner1InRegion = inRegion(addPoints(d1, (x, y)))
+        val corner2InRegion = inRegion(addPoints(d2, (x, y)))
+        if curCharInRegion then !corner1InRegion && !corner2InRegion
+        else corner1InRegion && corner2InRegion
+      }
+    }.sum
+  }.sum
 
 def part2(input: String): Int =
   val map = parse(input)
