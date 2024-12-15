@@ -1,5 +1,7 @@
 package aoc13
 
+import scala.io.Source.fromResource
+
 @main def main(): Unit =
   val input = fromResource("input.txt").mkString
   println(part1(input))

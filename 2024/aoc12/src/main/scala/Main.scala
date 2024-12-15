@@ -92,7 +92,12 @@ def sides(region: Array[Point]): Int =
         val corner1InRegion = inRegion(addPoints(d1, (x, y)))
         val corner2InRegion = inRegion(addPoints(d2, (x, y)))
         if curCharInRegion then !corner1InRegion && !corner2InRegion
-        else corner1InRegion && corner2InRegion
+        else {
+          // edge case for diagonal fence like in input5
+          inRegion(
+            addPoints(d1, addPoints(d2, (x, y)))
+          ) && corner1InRegion && corner2InRegion
+        }
       }
     }.sum
   }.sum
@@ -102,5 +107,9 @@ def part2(input: String): Int =
   val pointsByChar = groupByType(map)
   pointsByChar.values
     .flatMap(getRegions)
-    .map(r => sides(r) * r.length)
+    .map(r =>
+      val s = sides(r)
+      // println(f"${getMap(map, r(0)).get}: $s sides * ${r.length} area")
+      s * r.length
+    )
     .sum

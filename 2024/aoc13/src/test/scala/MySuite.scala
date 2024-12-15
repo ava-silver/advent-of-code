@@ -3,6 +3,7 @@
 
 import aoc13._
 val input = ""
+
 class MySuite extends munit.FunSuite {
   test("part1") {
     assertEquals(part1(input), 0)

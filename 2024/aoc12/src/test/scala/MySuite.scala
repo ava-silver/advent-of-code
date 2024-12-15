@@ -16,6 +16,24 @@ VVIIICJJEE
 MIIIIIJJEE
 MIIISIJEEE
 MMMISSJEEE"""
+val input3 = """OOOOO
+OXOXO
+OOOOO
+OXOXO
+OOOOO"""
+
+val input4 = """EEEEE
+EXXXX
+EEEEE
+EXXXX
+EEEEE"""
+val input5 = """
+AAAAAA
+AAABBA
+AAABBA
+ABBAAA
+ABBAAA
+AAAAAA"""
 
 class MySuite extends munit.FunSuite {
   test("part1") {
@@ -25,5 +43,8 @@ class MySuite extends munit.FunSuite {
   test("part2") {
     assertEquals(part2(input1), 80)
     assertEquals(part2(input2), 1206)
+    assertEquals(part2(input3), 436)
+    assertEquals(part2(input4), 236)
+    assertEquals(part2(input5), 368)
   }
 }
