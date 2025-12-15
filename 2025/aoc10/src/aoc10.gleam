@@ -59,6 +59,43 @@ fn all_combinations(l: List(a)) -> List(List(a)) {
   list.range(1, list.length(l)) |> list.flat_map(list.combinations(l, _))
 }
 
+fn min_presses(
+  machine: Machine,
+  states: set.Set(List(Int)),
+  seen: set.Set(List(Int)),
+) -> Int {
+  let new_states =
+    states
+    |> set.to_list
+    |> list.flat_map(fn(state) {
+      machine.buttons
+      |> list.filter_map(fn(button) {
+        let new_state =
+          state
+          |> list.index_map(fn(joltage, i) {
+            case set.contains(button, i) {
+              True -> joltage + 1
+              False -> joltage
+            }
+          })
+        case
+          !set.contains(seen, new_state)
+          && list.zip(new_state, machine.requirements)
+          |> list.all(fn(s) { s.0 <= s.1 })
+        {
+          True -> Ok(new_state)
+          False -> Error(Nil)
+        }
+      })
+    })
+    |> set.from_list
+
+  case set.contains(new_states, machine.requirements) {
+    True -> 1
+    False -> 1 + min_presses(machine, new_states, set.union(seen, new_states))
+  }
+}
+
 pub fn main() {
   let test_input =
     "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
@@ -83,6 +120,18 @@ pub fn main() {
       })
       |> list.reduce(int.min)
       |> unwrap
+    })
+    |> int.sum
+  echo minimum_presses
+  // part 2
+  let minimum_presses =
+    machines
+    |> list.map(fn(machine) {
+      min_presses(
+        machine,
+        set.from_list([list.map(machine.requirements, fn(_) { 0 })]),
+        set.new(),
+      )
     })
     |> int.sum
   echo minimum_presses
